@@ -7,6 +7,8 @@ from .structures import Node, DoublyLinkedList, Stack, PriorityQueue, CircularQu
 from .student import Estudiante, GradeList
 from .undo_redo import UndoRedoManager, Action
 from .student_management import StudentManager
+from .student_engine import StudentEngine
+from .logistic_engine import LogisticEngine
 
 __all__ = [
     "CollectionInterface",
@@ -23,4 +25,6 @@ __all__ = [
     "UndoRedoManager",
     "Action",
     "StudentManager",
+    "StudentEngine",
+    "LogisticEngine",
 ]
