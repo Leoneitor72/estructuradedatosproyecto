@@ -4,22 +4,32 @@ Si se pasa el argumento `--cli`, ejecuta la demostración en consola.
 """
 
 import sys
-import flet as ft
 from models.student_engine import StudentEngine
-from models.student import Estudiante
 from controllers.app_controller import AppController
-from views.desktop_view import DesktopView
 
 
 def run_gui():
     """Inicia la interfaz gráfica de escritorio con Flet."""
-    def gui_main(page: ft.Page):
-        engine = StudentEngine(sort_by="apellido")
-        engine.seed_sample_data()
-        controller = AppController(engine=engine)
-        DesktopView(page=page, controller=controller)
+    try:
+        import flet as ft
+        from views.desktop_view import DesktopView
 
-    ft.app(target=gui_main)
+        def gui_main(page: ft.Page):
+            engine = StudentEngine(sort_by="apellido")
+            engine.seed_sample_data()
+            controller = AppController(engine=engine)
+            DesktopView(page=page, controller=controller)
+
+        if hasattr(ft, "run"):
+            ft.run(gui_main)
+        elif hasattr(ft, "app"):
+            ft.app(target=gui_main)
+        else:
+            raise RuntimeError("No se encontró el lanzador de Flet.")
+    except Exception as e:
+        print(f"[AVISO] No se pudo iniciar la interfaz gráfica: {e}")
+        print("Iniciando modo demostración por consola (CLI)...")
+        run_cli_demo()
 
 
 def run_cli_demo():
@@ -56,7 +66,7 @@ def run_cli_demo():
 
     print("\n" + "=" * 65)
     print(" Para abrir la interfaz grafica completa con Flet:")
-    print(" Ejecuta: python main.py")
+    print(" Ejecuta: python main.py  (o python app.py)")
     print("=" * 65)
 
 

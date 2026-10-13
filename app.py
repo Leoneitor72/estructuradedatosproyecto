@@ -1,5 +1,6 @@
 """Punto de entrada de la Aplicación de Escritorio Flet (Semana 2 - Día 5).
 Ejecuta la interfaz nativa en Windows (Win32), macOS o Linux.
+Compatible tanto con Flet 1.x (ft.run) como con Flet 0.x (ft.app).
 """
 
 import flet as ft
@@ -22,6 +23,15 @@ def main(page: ft.Page):
     DesktopView(page=page, controller=controller)
 
 
+def start():
+    """Lanzador compatible multiplataforma."""
+    if hasattr(ft, "run"):
+        ft.run(main)
+    elif hasattr(ft, "app"):
+        ft.app(target=main)
+    else:
+        raise RuntimeError("No se encontró el método de inicio de Flet (run / app).")
+
+
 if __name__ == "__main__":
-    # Inicia la aplicación en ventana de escritorio
-    ft.app(target=main)
+    start()

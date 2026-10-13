@@ -222,21 +222,21 @@ class DesktopView:
                     ft.Row(
                         [
                             ft.FilledButton(
-                                text=f"Deshacer ({undo_count})",
+                                content=f"Deshacer ({undo_count})",
                                 icon=ft.Icons.UNDO,
                                 on_click=self.on_undo_click,
                                 disabled=not can_undo,
                                 style=ft.ButtonStyle(bgcolor=ft.Colors.BLUE_700 if can_undo else ft.Colors.GREY_800),
                             ),
                             ft.FilledButton(
-                                text=f"Rehacer ({redo_count})",
+                                content=f"Rehacer ({redo_count})",
                                 icon=ft.Icons.REDO,
                                 on_click=self.on_redo_click,
                                 disabled=not can_redo,
                                 style=ft.ButtonStyle(bgcolor=ft.Colors.PURPLE_700 if can_redo else ft.Colors.GREY_800),
                             ),
                             ft.OutlinedButton(
-                                text="Datos Ejemplo",
+                                content="Datos Ejemplo",
                                 icon=ft.Icons.AUTO_AWESOME,
                                 on_click=self.on_seed_sample_click,
                             ),
@@ -265,19 +265,19 @@ class DesktopView:
         return ft.Row(
             [
                 ft.FilledButton(
-                    text="Visualizador de Memoria y Punteros",
+                    content="Visualizador de Memoria y Punteros",
                     icon=ft.Icons.HUB_OUTLINED,
                     style=ft.ButtonStyle(bgcolor=ft.Colors.BLUE_600 if is_vis else ft.Colors.SURFACE_CONTAINER_HIGHEST),
                     on_click=lambda _: set_section("visualizer"),
                 ),
                 ft.FilledButton(
-                    text="Operaciones y Estudiantes",
+                    content="Operaciones y Estudiantes",
                     icon=ft.Icons.EDIT_NOTE,
                     style=ft.ButtonStyle(bgcolor=ft.Colors.BLUE_600 if is_ops else ft.Colors.SURFACE_CONTAINER_HIGHEST),
                     on_click=lambda _: set_section("operations"),
                 ),
                 ft.FilledButton(
-                    text="Análisis y Rúbrica",
+                    content="Analisis y Rubrica",
                     icon=ft.Icons.ASSESSMENT_OUTLINED,
                     style=ft.ButtonStyle(bgcolor=ft.Colors.BLUE_600 if is_rub else ft.Colors.SURFACE_CONTAINER_HIGHEST),
                     on_click=lambda _: set_section("rubric"),
@@ -413,7 +413,7 @@ class DesktopView:
                                     ft.Row([self.tf_inscribir_id, self.tf_inscribir_nombre, self.tf_inscribir_apellido], spacing=8),
                                     ft.Row([self.tf_inscribir_notas, self.dd_inscribir_orden], spacing=8),
                                     ft.FilledButton(
-                                        text="Inscribir Alumno",
+                                        content="Inscribir Alumno",
                                         icon=ft.Icons.PERSON_ADD,
                                         on_click=self.on_inscribir_click,
                                     ),
@@ -435,7 +435,7 @@ class DesktopView:
                                         [
                                             self.tf_baja_id,
                                             ft.FilledButton(
-                                                text="Dar de Baja",
+                                                content="Dar de Baja",
                                                 icon=ft.Icons.PERSON_REMOVE,
                                                 style=ft.ButtonStyle(bgcolor=ft.Colors.RED_800),
                                                 on_click=self.on_dar_baja_click,
@@ -446,7 +446,7 @@ class DesktopView:
                                     ft.Divider(color=ft.Colors.GREY_800, height=1),
                                     ft.Row([self.tf_update_id, self.tf_update_notas], spacing=8),
                                     ft.FilledButton(
-                                        text="Actualizar Calificaciones",
+                                        content="Actualizar Calificaciones",
                                         icon=ft.Icons.GRADE,
                                         style=ft.ButtonStyle(bgcolor=ft.Colors.AMBER_800),
                                         on_click=self.on_actualizar_notas_click,
@@ -475,7 +475,7 @@ class DesktopView:
                                     self.tf_prio_apellido,
                                     self.tf_prio_score,
                                     ft.FilledButton(
-                                        text="Encolar Prioritario",
+                                        content="Encolar Prioritario",
                                         icon=ft.Icons.QUEUE,
                                         style=ft.ButtonStyle(bgcolor=ft.Colors.AMBER_700),
                                         on_click=self.on_encolar_prioridad_click,
