@@ -563,8 +563,9 @@ def build_circular_queue_view(
                 padding=8,
                 border=ft.Border.all(2 if is_active else 1, ft.Colors.CYAN_400 if is_active else ft.Colors.CYAN_800),
                 border_radius=ft.BorderRadius.all(8),
-                bgcolor=ft.Colors.CYAN_950 if is_active else ft.Colors.SURFACE_CONTAINER_HIGHEST,
+                bgcolor=ft.Colors.CYAN_900 if is_active else ft.Colors.SURFACE_CONTAINER_HIGHEST,
             )
+
             cards.append(card)
             if i < len(circular_nodes) - 1:
                 cards.append(

@@ -758,16 +758,20 @@ class DesktopView:
         # Configurar NavigationBar responsiva para pantallas móviles/touch
         section_keys = ["visualizer", "operations", "metrics", "rubric"]
         sel_idx = section_keys.index(self.current_section) if self.current_section in section_keys else 0
-        self.page.navigation_bar = ft.NavigationBar(
-            selected_index=sel_idx,
-            destinations=[
-                ft.NavigationDestination(icon=ft.Icons.HUB_OUTLINED, selected_icon=ft.Icons.HUB, label="Estructuras"),
-                ft.NavigationDestination(icon=ft.Icons.EDIT_NOTE, label="Operaciones"),
-                ft.NavigationDestination(icon=ft.Icons.SPEED, label="Métricas"),
-                ft.NavigationDestination(icon=ft.Icons.ASSESSMENT_OUTLINED, label="Rúbrica"),
-            ],
-            on_change=lambda e: self._on_bottom_nav_change(e.control.selected_index),
-        )
+        NavDest = getattr(ft, "NavigationBarDestination", getattr(ft, "NavigationDestination", None))
+
+        if NavDest is not None:
+            self.page.navigation_bar = ft.NavigationBar(
+                selected_index=sel_idx,
+                destinations=[
+                    NavDest(icon=ft.Icons.HUB_OUTLINED, selected_icon=ft.Icons.HUB, label="Estructuras"),
+                    NavDest(icon=ft.Icons.EDIT_NOTE, label="Operaciones"),
+                    NavDest(icon=ft.Icons.SPEED, label="Métricas"),
+                    NavDest(icon=ft.Icons.ASSESSMENT_OUTLINED, label="Rúbrica"),
+                ],
+                on_change=lambda e: self._on_bottom_nav_change(e.control.selected_index),
+            )
+
 
         # Determinar contenido según la pestaña seleccionada
         if self.current_section == "visualizer":
