@@ -51,6 +51,9 @@ class StudentManager:
         else:
             self.students_list.append(estudiante)
 
+        # Sincronizar ronda circular
+        self.review_round.enqueue(estudiante)
+
         if record_history:
             self.undo_manager.record_action(
                 Action(
@@ -61,6 +64,7 @@ class StudentManager:
             )
 
         return estudiante
+
 
     def dar_de_baja(self, id_estudiante: str, record_history: bool = True) -> bool:
         """Funcionalidad 2: Dar de Baja a Estudiante.
@@ -76,20 +80,23 @@ class StudentManager:
         notas_actuales = estudiante.calificaciones.to_list()
 
         eliminado = self.students_list.remove(lambda est: est.id == id_clean)
-        if eliminado and record_history:
-            self.undo_manager.record_action(
-                Action(
-                    action_type=Action.REMOVE,
-                    payload={
-                        "id": estudiante.id,
-                        "nombre": estudiante.nombre,
-                        "apellido": estudiante.apellido,
-                        "calificaciones": notas_actuales,
-                    },
-                    description=f"Baja de estudiante {estudiante.id} ({estudiante.apellido})",
+        if eliminado:
+            self.cargar_ronda_circular()
+            if record_history:
+                self.undo_manager.record_action(
+                    Action(
+                        action_type=Action.REMOVE,
+                        payload={
+                            "id": estudiante.id,
+                            "nombre": estudiante.nombre,
+                            "apellido": estudiante.apellido,
+                            "calificaciones": notas_actuales,
+                        },
+                        description=f"Baja de estudiante {estudiante.id} ({estudiante.apellido})",
+                    )
                 )
-            )
         return eliminado
+
 
     def buscar_estudiante(self, id_estudiante: str) -> Optional[Estudiante]:
         """Busca un estudiante en la lista enlazada por su ID O(n)."""

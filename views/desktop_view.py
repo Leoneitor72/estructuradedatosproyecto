@@ -49,6 +49,15 @@ class DesktopView:
             margin=ft.Margin.only(bottom=10),
         )
 
+        # Diálogo modal activo
+        self.active_dialog: Optional[ft.AlertDialog] = None
+
+        # Campos de adición rápida en el visualizador
+        self.tf_quick_id = ft.TextField(label="ID", hint_text="EST-105", width=110)
+        self.tf_quick_nombre = ft.TextField(label="Nombre", hint_text="Carlos", width=120)
+        self.tf_quick_apellido = ft.TextField(label="Apellido", hint_text="Mendoza", width=120)
+        self.tf_quick_notas = ft.TextField(label="Notas", hint_text="15, 18.5", width=130)
+
         # Campos de Formulario: Inscribir
         self.tf_inscribir_id = ft.TextField(label="ID Alumno", hint_text="EST-105", width=140)
         self.tf_inscribir_nombre = ft.TextField(label="Nombre", hint_text="Carlos", width=160)
@@ -64,6 +73,7 @@ class DesktopView:
                 ft.DropdownOption("none", "Al Final - Append (O(1))"),
             ],
         )
+
 
         # Campos de Formulario: Dar de Baja
         self.tf_baja_id = ft.TextField(label="ID a Dar de Baja", hint_text="EST-102", width=180)
@@ -103,7 +113,103 @@ class DesktopView:
     # EVENTOS DE ACCIONES (INTERACCIÓN CON EL CONTROLADOR)
     # =========================================================================
 
+    def open_dialog(self, dlg: ft.AlertDialog):
+        self.active_dialog = dlg
+        if hasattr(self.page, "show_dialog"):
+            self.page.show_dialog(dlg)
+        else:
+            self.page.dialog = dlg
+            dlg.open = True
+            self.page.update()
+
+    def close_dialog(self, _=None):
+        if hasattr(self.page, "pop_dialog"):
+            self.page.pop_dialog()
+        elif self.page.dialog:
+            self.page.dialog.open = False
+            self.page.update()
+        self.active_dialog = None
+
+    def open_add_student_dialog(self, _=None):
+        """Abre un diálogo modal para añadir un estudiante manualmente desde cualquier pestaña."""
+        total_actual = len(self.controller.get_students_table())
+        sug_id = f"EST-{101 + total_actual}"
+
+        tf_id = ft.TextField(label="ID Alumno", value=sug_id, width=280, autofocus=True)
+        tf_nom = ft.TextField(label="Nombre", hint_text="Ej: Carlos", width=280)
+        tf_ape = ft.TextField(label="Apellido", hint_text="Ej: Mendoza", width=280)
+        tf_notas = ft.TextField(label="Notas (separadas por coma)", hint_text="15.0, 18.0, 16.5", width=280)
+        dd_orden = ft.Dropdown(
+            label="Orden de Inserción",
+            width=280,
+            value="apellido",
+            options=[
+                ft.DropdownOption("apellido", "Por Apellido (O(n))"),
+                ft.DropdownOption("id", "Por ID (O(n))"),
+                ft.DropdownOption("none", "Al Final - Append (O(1))"),
+            ],
+        )
+
+        def on_submit(_):
+            sort_mode = dd_orden.value
+            if sort_mode == "none":
+                sort_mode = None
+            res = self.controller.inscribir_estudiante(
+                id_estudiante=tf_id.value or "",
+                nombre=tf_nom.value or "",
+                apellido=tf_ape.value or "",
+                notas_raw=tf_notas.value or "",
+                sort_by=sort_mode,
+            )
+            self.show_status(res["message"], is_success=res["success"])
+            if res["success"]:
+                self.close_dialog()
+
+        dlg = ft.AlertDialog(
+            title=ft.Row([ft.Icon(ft.Icons.PERSON_ADD, color=ft.Colors.GREEN_400), ft.Text("Añadir Estudiante Manualmente")], spacing=8),
+            content=ft.Column(
+                [
+                    ft.Text("Ingresa los datos para crear un nuevo nodo en memoria:", size=12, color=ft.Colors.GREY_300),
+                    tf_id,
+                    tf_nom,
+                    tf_ape,
+                    tf_notas,
+                    dd_orden,
+                ],
+                tight=True,
+                spacing=10,
+            ),
+            actions=[
+                ft.TextButton(content="Cancelar", on_click=self.close_dialog),
+                ft.FilledButton(
+                    content="Guardar Estudiante",
+                    icon=ft.Icons.CHECK,
+                    style=ft.ButtonStyle(bgcolor=ft.Colors.GREEN_700),
+                    on_click=on_submit,
+                ),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+        self.open_dialog(dlg)
+
+    def on_quick_inscribir_click(self, _):
+        """Inscribe un estudiante directamente desde la barra rápida del visualizador."""
+        res = self.controller.inscribir_estudiante(
+            id_estudiante=self.tf_quick_id.value or "",
+            nombre=self.tf_quick_nombre.value or "",
+            apellido=self.tf_quick_apellido.value or "",
+            notas_raw=self.tf_quick_notas.value or "",
+            sort_by="apellido",
+        )
+        self.show_status(res["message"], is_success=res["success"])
+        if res["success"]:
+            self.tf_quick_id.value = ""
+            self.tf_quick_nombre.value = ""
+            self.tf_quick_apellido.value = ""
+            self.tf_quick_notas.value = ""
+
     def on_inscribir_click(self, _):
+
         sort_mode = self.dd_inscribir_orden.value
         if sort_mode == "none":
             sort_mode = None
@@ -223,7 +329,7 @@ class DesktopView:
                                         color=ft.Colors.WHITE,
                                     ),
                                     ft.Text(
-                                        "Semana 2: Integración MVC y Visualización Dinámica en Flet",
+                                        "Proyecto Completo (Semanas 1, 2 y 3) - Arquitectura MVC",
                                         size=11,
                                         color=ft.Colors.GREY_400,
                                     ),
@@ -233,9 +339,15 @@ class DesktopView:
                         ],
                         spacing=8,
                     ),
-                    # Acciones globales (Deshacer, Rehacer, Cargar Muestra)
+                    # Acciones globales (Añadir Estudiante, Deshacer, Rehacer, Cargar Muestra)
                     ft.Row(
                         [
+                            ft.FilledButton(
+                                content="+ Añadir Estudiante",
+                                icon=ft.Icons.PERSON_ADD,
+                                on_click=self.open_add_student_dialog,
+                                style=ft.ButtonStyle(bgcolor=ft.Colors.GREEN_700),
+                            ),
                             ft.FilledButton(
                                 content=f"Deshacer ({undo_count})",
                                 icon=ft.Icons.UNDO,
@@ -319,15 +431,52 @@ class DesktopView:
 
         return ft.Column(
             [
-                # 1. Lista Doblemente Enlazada
+                # 1. Lista Doblemente Enlazada con botón para añadir estudiante
                 ft.Row(
                     [
-                        ft.Icon(ft.Icons.SHARE, color=ft.Colors.BLUE_400, size=20),
-                        ft.Text("1. Lista Doblemente Enlazada (Nodos y Punteros next / prev)", size=14, weight=ft.FontWeight.BOLD),
+                        ft.Row(
+                            [
+                                ft.Icon(ft.Icons.SHARE, color=ft.Colors.BLUE_400, size=20),
+                                ft.Text("1. Lista Doblemente Enlazada (Nodos y Punteros next / prev)", size=14, weight=ft.FontWeight.BOLD),
+                            ],
+                            spacing=6,
+                        ),
+                        ft.FilledButton(
+                            content="+ Añadir Estudiante",
+                            icon=ft.Icons.PERSON_ADD_ALT_1,
+                            on_click=self.open_add_student_dialog,
+                            style=ft.ButtonStyle(bgcolor=ft.Colors.GREEN_700),
+                        ),
                     ],
-                    spacing=6,
+                    alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                ),
+                # Barra de inscripción manual rápida
+                ft.Container(
+                    content=ft.Row(
+                        [
+                            ft.Icon(ft.Icons.FLASH_ON, color=ft.Colors.GREEN_400, size=18),
+                            ft.Text("Inscripción Rápida:", size=11, weight=ft.FontWeight.BOLD, color=ft.Colors.GREEN_300),
+                            self.tf_quick_id,
+                            self.tf_quick_nombre,
+                            self.tf_quick_apellido,
+                            self.tf_quick_notas,
+                            ft.FilledButton(
+                                content="Guardar Alumno",
+                                icon=ft.Icons.ADD,
+                                on_click=self.on_quick_inscribir_click,
+                                style=ft.ButtonStyle(bgcolor=ft.Colors.GREEN_700),
+                            ),
+                        ],
+                        spacing=6,
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                    ),
+                    padding=ft.Padding.symmetric(horizontal=10, vertical=6),
+                    bgcolor=ft.Colors.SURFACE_CONTAINER_LOW,
+                    border=ft.Border.all(1, ft.Colors.GREEN_900),
+                    border_radius=ft.BorderRadius.all(8),
                 ),
                 build_doubly_linked_list_view(nodes_data, on_delete_callback=self.on_delete_node_direct),
+
 
                 # 2. Pilas LIFO (Undo y Redo)
                 ft.Row(
