@@ -45,10 +45,10 @@ proyecto/
 │   └── test_semana3.py           # Pruebas de Lista Circular y métricas de rendimiento
 ├── main.py                       # Lanzador general (Desktop, Web o CLI)
 ├── app.py                        # Lanzador directo de interfaz gráfica
-├── entrega_semana1.py             # Script unificado de la Semana 1
 ├── build_exe.bat                 # Script de compilación a ejecutable Windows (Win32 EXE)
 ├── requirements.txt              # Dependencias del proyecto
 └── README.md
+
 ```
 
 ---
