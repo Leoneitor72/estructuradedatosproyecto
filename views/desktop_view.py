@@ -12,6 +12,7 @@ from .components import (
     build_priority_queue_view,
     build_circular_queue_view,
     build_stats_panel,
+    build_benchmark_panel,
 )
 
 
@@ -23,11 +24,13 @@ class DesktopView:
         self.controller: AppController = controller
 
         # Estado visual
-        self.current_section: str = "visualizer"  # 'visualizer' | 'operations' | 'rubric'
+        self.current_section: str = "visualizer"  # 'visualizer' | 'operations' | 'metrics' | 'rubric'
         self.current_circular_turn: Optional[Dict[str, Any]] = None
+        self.benchmark_data: Optional[Dict[str, Any]] = None
 
         # Registrar este view como listener de cambios en el controlador
         self.controller.register_listener(self.render)
+
 
         # Configurar propiedades iniciales de la ventana
         self.page.title = "Simulador de Gestión de Estudiantes - Estructuras de Datos MVC"
@@ -168,6 +171,18 @@ class DesktopView:
             self.current_circular_turn = res.get("data")
         self.show_status(res["message"], is_success=res["success"])
 
+    def on_circular_prev_click(self):
+        res = self.controller.retroceder_turno_circular()
+        if res["success"]:
+            self.current_circular_turn = res.get("data")
+        self.show_status(res["message"], is_success=res["success"])
+
+    def on_run_benchmarks_click(self):
+        self.benchmark_data = self.controller.run_benchmarks()
+        self.show_status("Benchmark completado con éxito: métricas y latencias en vivo actualizadas.", is_success=True)
+        self.render()
+
+
     def on_undo_click(self, _):
         res = self.controller.deshacer()
         self.show_status(res["message"], is_success=res["success"], is_undo=True)
@@ -260,12 +275,13 @@ class DesktopView:
 
         is_vis = self.current_section == "visualizer"
         is_ops = self.current_section == "operations"
+        is_met = self.current_section == "metrics"
         is_rub = self.current_section == "rubric"
 
         return ft.Row(
             [
                 ft.FilledButton(
-                    content="Visualizador de Memoria y Punteros",
+                    content="Estructuras de Memoria",
                     icon=ft.Icons.HUB_OUTLINED,
                     style=ft.ButtonStyle(bgcolor=ft.Colors.BLUE_600 if is_vis else ft.Colors.SURFACE_CONTAINER_HIGHEST),
                     on_click=lambda _: set_section("visualizer"),
@@ -277,21 +293,29 @@ class DesktopView:
                     on_click=lambda _: set_section("operations"),
                 ),
                 ft.FilledButton(
-                    content="Analisis y Rubrica",
+                    content="Métricas y Rendimiento",
+                    icon=ft.Icons.SPEED,
+                    style=ft.ButtonStyle(bgcolor=ft.Colors.BLUE_600 if is_met else ft.Colors.SURFACE_CONTAINER_HIGHEST),
+                    on_click=lambda _: set_section("metrics"),
+                ),
+                ft.FilledButton(
+                    content="Análisis y Rúbrica",
                     icon=ft.Icons.ASSESSMENT_OUTLINED,
                     style=ft.ButtonStyle(bgcolor=ft.Colors.BLUE_600 if is_rub else ft.Colors.SURFACE_CONTAINER_HIGHEST),
                     on_click=lambda _: set_section("rubric"),
                 ),
             ],
             spacing=8,
+            wrap=True,
         )
 
     def build_visualizer_tab(self) -> ft.Control:
-        """Semana 2 - Día 3: Visualización Dinámica de las Estructuras."""
+        """Semana 2 y 3: Visualización Dinámica de las Estructuras y Circuito Circular."""
         nodes_data = self.controller.get_doubly_linked_list_nodes()
         undo_items = self.controller.get_undo_stack_items()
         redo_items = self.controller.get_redo_stack_items()
         priority_items = self.controller.get_priority_queue_items()
+        circular_nodes = self.controller.get_circular_list_nodes()
 
         return ft.Column(
             [
@@ -337,18 +361,24 @@ class DesktopView:
                 ),
                 build_priority_queue_view(priority_items, on_attend_callback=self.on_atender_prioridad_click),
 
-                # 4. Cola Circular
+                # 4. Lista Doblemente Enlazada Circular (Circuito continuo)
                 ft.Row(
                     [
                         ft.Icon(ft.Icons.SYNC, color=ft.Colors.CYAN_400, size=20),
-                        ft.Text("4. Cola Circular de Revisión (Round-Robin continuo)", size=14, weight=ft.FontWeight.BOLD),
+                        ft.Text("4. Lista Doblemente Enlazada Circular (Circuito Continuo y Turnos)", size=14, weight=ft.FontWeight.BOLD),
                     ],
                     spacing=6,
                 ),
-                build_circular_queue_view(self.current_circular_turn, on_step_callback=self.on_circular_step_click),
+                build_circular_queue_view(
+                    circular_nodes=circular_nodes,
+                    current_turn=self.current_circular_turn,
+                    on_step_callback=self.on_circular_step_click,
+                    on_prev_callback=self.on_circular_prev_click,
+                ),
             ],
             spacing=16,
         )
+
 
     def build_operations_tab(self) -> ft.Control:
         """Formularios de acción para las 5 funcionalidades pedidas."""
@@ -501,40 +531,56 @@ class DesktopView:
             spacing=16,
         )
 
+    def build_metrics_tab(self) -> ft.Control:
+        """Semana 3 - Día 3: Panel de Métricas de Rendimiento en Tiempo Real."""
+        if self.benchmark_data is None:
+            self.benchmark_data = self.controller.run_benchmarks(iterations=1000)
+        return build_benchmark_panel(
+            benchmark_data=self.benchmark_data,
+            on_run_benchmark=self.on_run_benchmarks_click,
+        )
+
     def build_rubric_tab(self) -> ft.Control:
-        """Análisis y verificación de cumplimiento de la rúbrica."""
+        """Análisis y verificación de cumplimiento integral de la rúbrica (Semanas 1, 2 y 3)."""
         return ft.Column(
             [
                 ft.Container(
                     content=ft.Column(
                         [
-                            ft.Text("Cumplimiento de la Rúbrica Pedagógica (Semana 2)", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ft.Text("Cumplimiento de la Rúbrica Pedagógica (Proyecto Completo)", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                             ft.Divider(color=ft.Colors.GREY_800),
                             ft.Row(
                                 [
                                     ft.Icon(ft.Icons.VERIFIED, color=ft.Colors.GREEN_400),
-                                    ft.Text("35% Implementación Manual: Estructuras puras (Node, DoublyLinkedList, Stack, Queues) sin usar list.", size=12),
+                                    ft.Text("35% Implementación Manual: Nodos y punteros explícitos (DoublyLinkedList, Stack, PriorityQueue, CircularDoublyLinkedList) sin usar list.", size=12),
                                 ],
                                 spacing=6,
                             ),
                             ft.Row(
                                 [
                                     ft.Icon(ft.Icons.VERIFIED, color=ft.Colors.GREEN_400),
-                                    ft.Text("20% Arquitectura MVC: Aislamiento total del Modelo respecto a la interfaz Flet y Controladores.", size=12),
+                                    ft.Text("20% Arquitectura MVC: Desacoplamiento estricto del Modelo respecto a la interfaz Flet y Controladores.", size=12),
                                 ],
                                 spacing=6,
                             ),
                             ft.Row(
                                 [
                                     ft.Icon(ft.Icons.VERIFIED, color=ft.Colors.GREEN_400),
-                                    ft.Text("15% Visualización Interactiva: Nodos conectados con flechas bidireccionales, bloques de Pila y tarjetas de Prioridad.", size=12),
+                                    ft.Text("20% Soporte Multiplataforma: Ejecución nativa Win32, modo Navegador Web (--web) y barra adaptativa para pantallas táctiles/móviles.", size=12),
                                 ],
                                 spacing=6,
                             ),
                             ft.Row(
                                 [
                                     ft.Icon(ft.Icons.VERIFIED, color=ft.Colors.GREEN_400),
-                                    ft.Text("10% Sistema Undo/Redo: Historial reversible conectado a botones en la interfaz.", size=12),
+                                    ft.Text("15% Visualización Interactiva: Nodos bidireccionales, bloques apilados LIFO, tarjetas de prioridad y circuito continuo circular.", size=12),
+                                ],
+                                spacing=6,
+                            ),
+                            ft.Row(
+                                [
+                                    ft.Icon(ft.Icons.VERIFIED, color=ft.Colors.GREEN_400),
+                                    ft.Text("10% Análisis Algorítmico y Métricas: Medición empírica en tiempo real de ops/seg, latencias en µs, memoria por nodo y O(1) vs O(n).", size=12),
                                 ],
                                 spacing=6,
                             ),
@@ -550,15 +596,37 @@ class DesktopView:
             spacing=12,
         )
 
+    def _on_bottom_nav_change(self, idx: int):
+        sections = ["visualizer", "operations", "metrics", "rubric"]
+        if 0 <= idx < len(sections):
+            self.current_section = sections[idx]
+            self.render()
+
     def build_ui(self):
         """Construye o reconstruye la interfaz de usuario completa."""
         stats = self.controller.get_statistics()
+
+        # Configurar NavigationBar responsiva para pantallas móviles/touch
+        section_keys = ["visualizer", "operations", "metrics", "rubric"]
+        sel_idx = section_keys.index(self.current_section) if self.current_section in section_keys else 0
+        self.page.navigation_bar = ft.NavigationBar(
+            selected_index=sel_idx,
+            destinations=[
+                ft.NavigationDestination(icon=ft.Icons.HUB_OUTLINED, selected_icon=ft.Icons.HUB, label="Estructuras"),
+                ft.NavigationDestination(icon=ft.Icons.EDIT_NOTE, label="Operaciones"),
+                ft.NavigationDestination(icon=ft.Icons.SPEED, label="Métricas"),
+                ft.NavigationDestination(icon=ft.Icons.ASSESSMENT_OUTLINED, label="Rúbrica"),
+            ],
+            on_change=lambda e: self._on_bottom_nav_change(e.control.selected_index),
+        )
 
         # Determinar contenido según la pestaña seleccionada
         if self.current_section == "visualizer":
             body = self.build_visualizer_tab()
         elif self.current_section == "operations":
             body = self.build_operations_tab()
+        elif self.current_section == "metrics":
+            body = self.build_metrics_tab()
         else:
             body = self.build_rubric_tab()
 
@@ -577,6 +645,7 @@ class DesktopView:
             )
         )
         self.page.update()
+
 
     def render(self):
         """Función llamada por el controlador ante cambios de modelo."""

@@ -400,6 +400,17 @@ class CircularQueue(QueueInterface):
         self.head = self.head.next
         return self.head.data
 
+    def step_backward(self) -> Optional[Any]:
+        """Retrocede un paso en el ciclo circular bidireccional O(1)."""
+        if self.is_empty() or self._size == 1:
+            return self.peek()
+
+        assert self.head is not None
+        assert self.tail is not None
+        self.head = self.tail
+        self.tail = self.tail.prev
+        return self.head.data
+
     def __iter__(self) -> Iterator[Any]:
         """Itera una vuelta completa por los elementos circulares."""
         if self.is_empty():
@@ -409,3 +420,8 @@ class CircularQueue(QueueInterface):
             assert current is not None
             yield current.data
             current = current.next
+
+
+# Alias según la rúbrica de la Semana 3
+CircularDoublyLinkedList = CircularQueue
+

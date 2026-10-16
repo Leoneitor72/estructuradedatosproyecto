@@ -1,8 +1,8 @@
-"""Punto de entrada de la Aplicación de Escritorio Flet (Semana 2 - Día 5).
-Ejecuta la interfaz nativa en Windows (Win32), macOS o Linux.
-Compatible tanto con Flet 1.x (ft.run) como con Flet 0.x (ft.app).
+"""Punto de entrada de la Aplicación Multiplataforma Flet (Semanas 2 y 3).
+Ejecuta la interfaz nativa en Windows (Win32), macOS, Linux o Navegador Web.
 """
 
+import sys
 import flet as ft
 from models.student_engine import StudentEngine
 from controllers.app_controller import AppController
@@ -13,7 +13,7 @@ def main(page: ft.Page):
     # 1. Instanciar el modelo puro
     engine = StudentEngine(sort_by="apellido")
 
-    # 2. Cargar datos de prueba iniciales para que la interfaz se vea viva de inmediato
+    # 2. Cargar datos de prueba iniciales
     engine.seed_sample_data()
 
     # 3. Instanciar el controlador MVC
@@ -24,11 +24,19 @@ def main(page: ft.Page):
 
 
 def start():
-    """Lanzador compatible multiplataforma."""
+    """Lanzador compatible multiplataforma (Win32 y Web)."""
+    web = any(a in sys.argv for a in ("--web", "-w", "--browser"))
     if hasattr(ft, "run"):
-        ft.run(main)
+        if web:
+            print("[INFO] Iniciando servidor Web Flet: http://localhost:8550")
+            ft.run(main, view=ft.AppView.WEB_BROWSER, port=8550)
+        else:
+            ft.run(main)
     elif hasattr(ft, "app"):
-        ft.app(target=main)
+        if web:
+            ft.app(target=main, view=ft.AppView.WEB_BROWSER, port=8550)
+        else:
+            ft.app(target=main)
     else:
         raise RuntimeError("No se encontró el método de inicio de Flet (run / app).")
 

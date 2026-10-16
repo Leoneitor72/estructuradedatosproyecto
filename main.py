@@ -1,6 +1,9 @@
-"""Punto de entrada principal del proyecto (Semana 1 y Semana 2).
-Por defecto inicia la aplicación de escritorio Flet con arquitectura MVC.
-Si se pasa el argumento `--cli`, ejecuta la demostración en consola.
+"""Punto de entrada principal del proyecto (Semanas 1, 2 y 3).
+Arquitectura MVC - Estructuras de Datos Lineales Puras.
+Modos de ejecución:
+- Escritorio Nativo (Win32): python main.py
+- Navegador Web:             python main.py --web
+- Consola (CLI):             python main.py --cli
 """
 
 import sys
@@ -8,8 +11,8 @@ from models.student_engine import StudentEngine
 from controllers.app_controller import AppController
 
 
-def run_gui():
-    """Inicia la interfaz gráfica de escritorio con Flet."""
+def run_gui(web_mode: bool = False):
+    """Inicia la interfaz gráfica en modo Escritorio o Navegador Web."""
     try:
         import flet as ft
         from views.desktop_view import DesktopView
@@ -21,9 +24,16 @@ def run_gui():
             DesktopView(page=page, controller=controller)
 
         if hasattr(ft, "run"):
-            ft.run(gui_main)
+            if web_mode:
+                print("[INFO] Iniciando servidor Web Flet en navegador: http://localhost:8550")
+                ft.run(gui_main, view=ft.AppView.WEB_BROWSER, port=8550)
+            else:
+                ft.run(gui_main)
         elif hasattr(ft, "app"):
-            ft.app(target=gui_main)
+            if web_mode:
+                ft.app(target=gui_main, view=ft.AppView.WEB_BROWSER, port=8550)
+            else:
+                ft.app(target=gui_main)
         else:
             raise RuntimeError("No se encontró el lanzador de Flet.")
     except Exception as e:
@@ -35,7 +45,7 @@ def run_gui():
 def run_cli_demo():
     """Demostración de consola para terminales sin soporte gráfico."""
     print("=" * 65)
-    print(" SIMULADOR DE GESTION DE ESTUDIANTES - SEMANA 1 Y SEMANA 2")
+    print(" SIMULADOR DE GESTION DE ESTUDIANTES - SEMANAS 1, 2 Y 3")
     print(" Arquitectura MVC - Estructuras Lineales Puras - Doble Pila")
     print("=" * 65)
 
@@ -64,14 +74,24 @@ def run_cli_demo():
     atendido = controller.atender_siguiente_prioridad()
     print(atendido["message"])
 
+    print("\n[5] Probando Benchmark de Rendimiento (Semana 3):")
+    bench = controller.run_benchmarks(iterations=1000)
+    print(f"Memoria por nodo: {bench['memory']['node_bytes']} bytes")
+    for b in bench["benchmarks"][:3]:
+        print(f" - {b['estructura']} {b['operacion']}: {b['ops_segundo']:,} ops/s ({b['complejidad']})")
+
     print("\n" + "=" * 65)
-    print(" Para abrir la interfaz grafica completa con Flet:")
-    print(" Ejecuta: python main.py  (o python app.py)")
+    print(" Para abrir la interfaz grafica completa:")
+    print(" - Escritorio: python main.py  (o python app.py)")
+    print(" - Navegador:  python main.py --web")
     print("=" * 65)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] in ("--cli", "--demo", "-c"):
+    args = sys.argv[1:]
+    if any(a in args for a in ("--cli", "--demo", "-c")):
         run_cli_demo()
+    elif any(a in args for a in ("--web", "-w", "--browser")):
+        run_gui(web_mode=True)
     else:
-        run_gui()
+        run_gui(web_mode=False)

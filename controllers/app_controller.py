@@ -188,6 +188,22 @@ class AppController:
             "data": est.to_dict(),
         }
 
+    def retroceder_turno_circular(self) -> Dict[str, Any]:
+        """Retrocede el turno en la ruta circular bidireccional en O(1)."""
+        if self.model.review_round.is_empty():
+            self.model.cargar_ronda_circular()
+
+        est = self.model.anterior_en_turno()
+        if not est:
+            return {"success": False, "message": "No hay estudiantes en la ronda circular."}
+
+        self._notify_state_changed()
+        return {
+            "success": True,
+            "message": f"Turno anterior: {est.nombre} {est.apellido} ({est.id}) - Promedio: {est.calcular_promedio():.2f}",
+            "data": est.to_dict(),
+        }
+
     # =========================================================================
     # CONSULTAS DE ESTADO PARA LAS VISTAS GRÁFICAS (DÍA 3)
     # =========================================================================
@@ -195,6 +211,10 @@ class AppController:
     def get_doubly_linked_list_nodes(self) -> List[Dict[str, Any]]:
         """Obtiene la lista de nodos con referencias prev y next para el visualizador."""
         return self.model.get_doubly_linked_nodes_data()
+
+    def get_circular_list_nodes(self) -> List[Dict[str, Any]]:
+        """Obtiene los nodos de la Lista/Cola Circular para el circuito animado."""
+        return self.model.get_circular_nodes_data()
 
     def get_undo_stack_items(self) -> List[str]:
         return self.model.get_undo_stack_items()
@@ -216,3 +236,12 @@ class AppController:
 
     def can_redo(self) -> bool:
         return self.model.undo_manager.can_redo()
+
+    def run_benchmarks(self, iterations: int = 3000) -> Dict[str, Any]:
+        """Ejecuta suite de rendimiento y memoria en tiempo real."""
+        from models.benchmarks import run_benchmark_suite, get_memory_footprint
+        return {
+            "benchmarks": run_benchmark_suite(iterations),
+            "memory": get_memory_footprint(),
+        }
+

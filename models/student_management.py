@@ -247,3 +247,8 @@ class StudentManager:
     def siguiente_en_turno(self) -> Optional[Estudiante]:
         """Avanza al siguiente estudiante en el turno circular Round-Robin O(1)."""
         return self.review_round.step()
+
+    def anterior_en_turno(self) -> Optional[Estudiante]:
+        """Retrocede al estudiante previo en la ruta circular bidireccional O(1)."""
+        return self.review_round.step_backward()
+

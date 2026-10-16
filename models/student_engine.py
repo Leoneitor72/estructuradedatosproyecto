@@ -128,3 +128,27 @@ class StudentEngine(StudentManager):
                 "prioridad": priority,
             })
         return items
+
+    def get_circular_nodes_data(self) -> List[Dict[str, Any]]:
+        """Obtiene los nodos de la Lista/Cola Circular con sus punteros bidireccionales."""
+        items: List[Dict[str, Any]] = []
+        if self.review_round.is_empty():
+            return items
+        current = self.review_round.head
+        for idx in range(len(self.review_round)):
+            if not current:
+                break
+            est: Estudiante = current.data
+            items.append({
+                "index": idx,
+                "id": est.id,
+                "nombre": est.nombre,
+                "apellido": est.apellido,
+                "promedio": est.calcular_promedio(),
+                "prev_id": current.prev.data.id if current.prev else None,
+                "next_id": current.next.data.id if current.next else None,
+                "is_current": current == self.review_round.head,
+            })
+            current = current.next
+        return items
+
