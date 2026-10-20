@@ -1,4 +1,4 @@
-"""Módulo de Métricas y Benchmark de Rendimiento en Tiempo Real (Semana 3 - Día 3).
+"""Módulo de Métricas y Benchmark de Rendimiento en Tiempo Real.
 Calcula operaciones por segundo (ops/sec), consumo en memoria (bytes) y
 compara la complejidad teórica Big-O (O(1) vs O(n)) con resultados empíricos reales.
 """

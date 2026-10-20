@@ -1,5 +1,5 @@
-"""Pruebas unitarias para Semana 3:
-- Lista Doblemente Enlazada Circular (step_backward, alias).
+"""Pruebas unitarias para Lista Doblemente Enlazada Circular y Benchmarks:
+- Lista Doblemente Enlazada Circular (step, step_backward, punteros circulares).
 - Controlador: navegación circular y benchmark en tiempo real.
 - Métricas de memoria y complejidad temporal.
 """
@@ -11,7 +11,7 @@ from models.student_engine import StudentEngine
 from controllers.app_controller import AppController
 
 
-class TestSemana3(unittest.TestCase):
+class TestBenchmarksAndCircular(unittest.TestCase):
     def test_circular_doubly_linked_list_navigation(self):
         c_list = CircularDoublyLinkedList()
         c_list.enqueue("A")

@@ -1,5 +1,4 @@
 """Pruebas unitarias para las Estructuras de Datos Lineales.
-Semana 1 - Día 5.
 Valida el manejo explícito de nodos, consistencia de punteros bidireccionales y casos límite.
 """
 

@@ -1,6 +1,4 @@
-"""Gestor de Deshacer/Rehacer (Undo/Redo Manager) mediante Doble Pila Enlazada.
-Semana 1 - Día 3.
-"""
+"""Gestor de Deshacer/Rehacer (Undo/Redo Manager) mediante Doble Pila Enlazada."""
 
 from typing import Any, Optional, Dict
 from .structures import Stack

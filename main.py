@@ -1,4 +1,4 @@
-"""Punto de entrada principal del proyecto (Semanas 1, 2 y 3).
+"""Punto de entrada principal del proyecto - Gestión de Estudiantes.
 Arquitectura MVC - Estructuras de Datos Lineales Puras.
 Modos de ejecución:
 - Escritorio Nativo (Win32): python main.py
@@ -45,7 +45,7 @@ def run_gui(web_mode: bool = False):
 def run_cli_demo():
     """Demostración de consola para terminales sin soporte gráfico."""
     print("=" * 65)
-    print(" SIMULADOR DE GESTION DE ESTUDIANTES - SEMANAS 1, 2 Y 3")
+    print(" GESTION DE ESTUDIANTES - CONTROL ACADEMICO")
     print(" Arquitectura MVC - Estructuras Lineales Puras - Doble Pila")
     print("=" * 65)
 
@@ -74,7 +74,7 @@ def run_cli_demo():
     atendido = controller.atender_siguiente_prioridad()
     print(atendido["message"])
 
-    print("\n[5] Probando Benchmark de Rendimiento (Semana 3):")
+    print("\n[5] Probando Benchmark de Rendimiento:")
     bench = controller.run_benchmarks(iterations=1000)
     print(f"Memoria por nodo: {bench['memory']['node_bytes']} bytes")
     for b in bench["benchmarks"][:3]:

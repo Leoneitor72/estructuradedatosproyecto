@@ -1,6 +1,4 @@
-"""Pruebas unitarias para el Controlador MVC (AppController).
-Semana 2 - Día 2.
-"""
+"""Pruebas unitarias para el Controlador MVC (AppController)."""
 
 import unittest
 from controllers.app_controller import AppController

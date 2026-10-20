@@ -1,6 +1,5 @@
 """Pruebas unitarias para el Sistema de Gestión de Estudiantes.
-Semana 1 - Día 5.
-Verifica las 5 funcionalidades requeridas y las capacidades de Undo/Redo y Colas.
+Verifica las funcionalidades del sistema académico y las capacidades de Undo/Redo y Colas.
 """
 
 import unittest

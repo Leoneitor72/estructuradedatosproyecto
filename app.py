@@ -1,4 +1,4 @@
-"""Punto de entrada de la Aplicación Multiplataforma Flet (Semanas 2 y 3).
+"""Punto de entrada de la Aplicación Multiplataforma Flet - Gestión de Estudiantes.
 Ejecuta la interfaz nativa en Windows (Win32), macOS, Linux o Navegador Web.
 """
 

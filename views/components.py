@@ -1,4 +1,4 @@
-"""Componentes Visuales en Flet para Estructuras de Datos (Semana 2 - Día 3).
+"""Componentes Visuales en Flet para Estructuras de Datos.
 Representación gráfica interactiva:
 - Vista gráfica de Lista Doblemente Enlazada (nodos con flechas bidireccionales).
 - Vista gráfica de Pila (bloques apilados verticalmente LIFO).
@@ -14,7 +14,7 @@ def build_doubly_linked_list_view(
     nodes_data: List[Dict[str, Any]],
     on_delete_callback: Optional[Callable[[str], None]] = None,
 ) -> ft.Control:
-    """Semana 2 - Día 3: Vista gráfica de Lista Doblemente Enlazada.
+    """Vista gráfica de Lista Doblemente Enlazada.
     Representa visualmente cada nodo enlazado con flechas bidireccionales prev y next.
     """
     if not nodes_data:
@@ -271,7 +271,7 @@ def build_stack_view(
     title: str = "Historial Deshacer (Undo Stack)",
     is_undo: bool = True,
 ) -> ft.Control:
-    """Semana 2 - Día 3: Vista gráfica de Pila (bloques apilados verticalmente LIFO)."""
+    """Vista gráfica de Pila (bloques apilados verticalmente LIFO)."""
     blocks: List[ft.Control] = []
 
     if not stack_items:
@@ -378,7 +378,7 @@ def build_priority_queue_view(
     priority_items: List[Dict[str, Any]],
     on_attend_callback: Optional[Callable[[], None]] = None,
 ) -> ft.Control:
-    """Semana 2 - Día 3: Vista gráfica de Cola de Prioridad.
+    """Vista gráfica de Cola de Prioridad.
     Tarjetas ordenadas horizontalmente con código de color por prioridad.
     """
     card_controls: List[ft.Control] = []
@@ -519,7 +519,7 @@ def build_circular_queue_view(
     on_step_callback: Optional[Callable[[], None]] = None,
     on_prev_callback: Optional[Callable[[], None]] = None,
 ) -> ft.Control:
-    """Semana 3 - Día 2: Vista gráfica animada de la Lista Doblemente Enlazada Circular (Circuito continuo)."""
+    """Vista gráfica de la Lista Doblemente Enlazada Circular (Circuito continuo)."""
     cards: List[ft.Control] = []
 
     if not circular_nodes:
@@ -639,7 +639,7 @@ def build_benchmark_panel(
     benchmark_data: Optional[Dict[str, Any]],
     on_run_benchmark: Optional[Callable[[], None]] = None,
 ) -> ft.Control:
-    """Semana 3 - Día 3: Panel de métricas de rendimiento en tiempo real O(1) vs O(n) y memoria."""
+    """Panel de métricas de rendimiento en tiempo real O(1) vs O(n) y memoria."""
     rows: List[ft.DataRow] = []
     benchmarks = benchmark_data.get("benchmarks", []) if benchmark_data else []
     memory = benchmark_data.get("memory", {}) if benchmark_data else {}
@@ -694,7 +694,7 @@ def build_benchmark_panel(
                                 ft.Icon(ft.Icons.SPEED, size=24, color=ft.Colors.GREEN_400),
                                 ft.Column(
                                     [
-                                        ft.Text("Panel de Métricas y Rendimiento en Tiempo Real (Semana 3)", size=14, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                                        ft.Text("Panel de Métricas y Rendimiento en Tiempo Real", size=14, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                                         ft.Text("Comparación de Complejidad Temporal Empírica O(1) vs O(n) y Consumo de Memoria por Nodo", size=11, color=ft.Colors.GREY_400),
                                     ],
                                     spacing=1,

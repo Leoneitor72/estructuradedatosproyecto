@@ -1,5 +1,5 @@
 """Motor Lógico del Dominio de Estudiantes y Estructuras de Datos.
-Semana 2 - Día 1: Integración del motor de negocio con entidades y estructuras.
+Integración del motor de negocio con entidades y estructuras puras.
 Extiende y provee utilidades de inspección para la capa de Controladores y Vistas.
 """
 

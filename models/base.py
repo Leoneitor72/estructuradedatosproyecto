@@ -1,5 +1,5 @@
 """Interfaces abstractas y contratos base para las estructuras de datos lineales.
-Semana 1 - Día 1: Definición de interfaces abstractas para colecciones.
+Definición de contratos formales para colecciones de memoria pura.
 """
 
 from abc import ABC, abstractmethod

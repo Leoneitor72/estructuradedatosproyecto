@@ -1,1 +1,1 @@
-"""Paquete de pruebas unitarias para la Semana 1."""
+"""Paquete de pruebas unitarias para el sistema de Gestión de Estudiantes."""

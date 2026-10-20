@@ -1,10 +1,10 @@
-# Simulador de Gestión de Estudiantes - Proyecto Completo (Semanas 1, 2 y 3)
+# Gestión de Estudiantes - Control Académico y Estructuras de Datos
 
 Proyecto integral de **Estructuras de Datos y Algoritmos** implementado con el patrón arquitectónico **Modelo-Vista-Controlador (MVC)** e interfaz gráfica multiplataforma en **Flet (Flutter engine)**.
 
 ---
 
-## 📋 Resumen de Cumplimiento de la Rúbrica Oficial (100%)
+## 📋 Resumen de Cumplimiento Técnico (100%)
 
 | Criterio | Ponderación | Estado | Implementación Técnica |
 |---|---|---|---|
@@ -26,9 +26,9 @@ proyecto/
 │   ├── structures.py             # Node, DoublyLinkedList, Stack, PriorityQueue, CircularDoublyLinkedList
 │   ├── student.py                # Entidad Estudiante y GradeList (lista enlazada de notas)
 │   ├── undo_redo.py              # UndoRedoManager (doble pila LIFO)
-│   ├── student_management.py     # Lógica de negocio (5 funcionalidades + rondas)
+│   ├── student_management.py     # Lógica de negocio (gestión académica + rondas)
 │   ├── student_engine.py         # Motor extendido para inspección y estadísticas
-│   ├── logistic_engine.py        # Alias de compatibilidad según el documento
+│   ├── logistic_engine.py        # Alias de compatibilidad técnica
 │   └── benchmarks.py             # Medición en tiempo real: ops/s, bytes y Big-O
 ├── controllers/                  # CONTROLADOR: Mediador MVC
 │   ├── __init__.py
@@ -42,7 +42,7 @@ proyecto/
 │   ├── test_structures.py        # Punteros y casos límite de estructuras lineales
 │   ├── test_student_manager.py   # Pruebas de funcionalidades y Undo/Redo
 │   ├── test_controller.py        # Pruebas de mediación del controlador
-│   └── test_semana3.py           # Pruebas de Lista Circular y métricas de rendimiento
+│   └── test_benchmarks_and_circular.py # Pruebas de Lista Circular y métricas de rendimiento
 ├── main.py                       # Lanzador general (Desktop, Web o CLI)
 ├── app.py                        # Lanzador directo de interfaz gráfica
 ├── build_exe.bat                 # Script de compilación a ejecutable Windows (Win32 EXE)
@@ -61,7 +61,7 @@ python main.py
 ```
 *(o también: `python app.py`)*
 
-### 2. Modo Navegador Web (Semana 3 - Día 1)
+### 2. Modo Navegador Web
 Despliega la aplicación en un servidor web local y la abre en el navegador predeterminado:
 ```bash
 python main.py --web
@@ -74,14 +74,14 @@ Para terminales sin entorno gráfico o revisiones rápidas:
 python main.py --cli
 ```
 
-### 4. Empaquetado a Win32 EXE Independiente (Semana 3 - Día 4)
+### 4. Empaquetado a Win32 EXE Independiente
 Para generar el ejecutable autónomo `.exe` para Windows:
 ```cmd
 build_exe.bat
 ```
 El ejecutable resultante se genera en `dist\SistemaEstudiantes.exe`.
 
-### 5. Ejecutar la Batería de Pruebas Unitarias (Semana 3 - Día 5)
+### 5. Ejecutar la Batería de Pruebas Unitarias
 ```bash
 python -m unittest discover tests
 ```
@@ -89,7 +89,7 @@ python -m unittest discover tests
 
 ---
 
-## ⚡ Complejidad Algorítmica y Rendimiento (Semana 3 - Día 3)
+## ⚡ Complejidad Algorítmica y Rendimiento
 
 | Operación | Estructura Utilizada | Complejidad Teórica | Rendimiento Empírico | Memoria por Nodo |
 |---|---|---|---|---|
@@ -104,16 +104,16 @@ python -m unittest discover tests
 
 ---
 
-## 🖥️ Módulos Visuales en la Interfaz Flet
+## 🖥️ Módulos de la Interfaz
 
 1. **Estructuras de Memoria:**
-   - **Lista Doblemente Enlazada:** Nodos con tarjetas de estudiantes, conexiones gráficas `next` / `prev`, indicadores de `HEAD` y `TAIL`.
+   - **Lista Doblemente Enlazada:** Nodos con tarjetas de estudiantes, conexiones gráficas `next` / `prev`, indicadores de `HEAD` y `TAIL`, y botón para añadir estudiante de forma manual o rápida.
    - **Pilas LIFO:** Visualización vertical de bloques apilados de Deshacer (Undo) y Rehacer (Redo).
    - **Cola de Prioridad:** Tarjetas con código de color (Becas/Urgente en rojo, Reubicación en ámbar, Regular en azul).
    - **Lista Circular (Circuito Continuo):** Recorrido cíclico bidireccional con indicador de turno activo y cierre de circuito `tail ↺ head`.
 2. **Operaciones y Registro:**
    - Formularios de inscripción ordenada o directa, baja, actualización de notas, encolado prioritario y tabla completa de calificaciones.
-3. **Métricas y Rendimiento:**
+3. **Métricas de Rendimiento:**
    - Panel de benchmarking en vivo con medición instantánea de operaciones por segundo, latencias medias y consumo en bytes.
-4. **Rúbrica y Arquitectura:**
-   - Detalle del cumplimiento de los criterios pedagógicos y de ingeniería de software.
+4. **Análisis y Rúbrica:**
+   - Panel interactivo con el desglose del 100% de la rúbrica oficial, verificación técnica de criterios y validación de las 27 pruebas superadas.

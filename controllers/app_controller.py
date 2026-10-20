@@ -1,5 +1,5 @@
 """Controlador Principal de la Aplicación (Patrón MVC).
-Semana 2 - Día 2: Mediación entre eventos de usuario en la UI y operaciones del Modelo.
+Mediación entre eventos de usuario en la UI y operaciones del Modelo.
 Aislamiento estricto: La vista solo interactúa con el Modelo a través de este controlador.
 """
 

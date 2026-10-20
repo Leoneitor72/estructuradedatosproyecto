@@ -1,5 +1,4 @@
 """Implementación pura de Estructuras de Datos Lineales basadas en Nodos y Punteros.
-Semana 1 - Días 2, 3 y 4.
 REGLA ESTRICTA: Sin uso de `list` nativo como estructura de almacenamiento subyacente.
 """
 
@@ -422,6 +421,6 @@ class CircularQueue(QueueInterface):
             current = current.next
 
 
-# Alias según la rúbrica de la Semana 3
+# Alias para Lista Doblemente Enlazada Circular
 CircularDoublyLinkedList = CircularQueue
 
